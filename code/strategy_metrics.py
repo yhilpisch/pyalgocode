@@ -19,7 +19,7 @@ The metrics mirror the concepts discussed in the appendix "When is a Strategy
 - maximum drawdown and drawdown duration
 - hit rate and skewness of the return distribution
 
-In the main block, three instruments from data/epat_eod.csv are loaded and
+In the main block, three instruments from data/nov25eod.csv are loaded and
 compared side by side using these metrics.
 
 (c) Dr. Yves J. Hilpisch
@@ -275,7 +275,7 @@ class StrategyMetrics:
         return result
 
 
-def _load_prices(csv_path: str = "data/epat_eod.csv") -> pd.DataFrame:
+def _load_prices(csv_path: str = "data/nov25eod.csv") -> pd.DataFrame:
     """Load daily prices for multiple instruments from the example CSV file."""
     df = pd.read_csv(csv_path, parse_dates=["Date"])
     df = df.set_index("Date")
@@ -305,7 +305,7 @@ if __name__ == "__main__":
     summary = metrics_engine.summarize_from_pnl(prices)
 
     #  Print a rounded overview with metrics as index and instruments as columns.
-    print("Strategy metrics for selected instruments from data/epat_eod.csv\n")
+    print("Strategy metrics for selected instruments from data/nov25eod.csv\n")
     decimals = {
         "total_return": 3,
         "ann_return": 4,

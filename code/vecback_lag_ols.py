@@ -12,13 +12,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-DATA_URL = ("https://raw.githubusercontent.com/yhilpisch/epatcode/"
-            "refs/heads/main/data/epat_eod.csv")
+DATA_URL = "https://hilpisch.com/nov25eod.csv"
 
 plt.style.use("seaborn-v0_8")
 
 
-def load_prices(path: str="data/epat_eod.csv",
+def load_prices(path: str="data/nov25eod.csv",
                 column: str="EURUSD") -> pd.Series:
     """Load end-of-day prices for a single instrument.
 

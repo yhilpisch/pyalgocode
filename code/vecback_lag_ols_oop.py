@@ -15,8 +15,7 @@ from pathlib import Path
 plt.style.use("seaborn-v0_8")
 
 
-DATA_URL = ("https://raw.githubusercontent.com/yhilpisch/epatcode/"
-            "refs/heads/main/data/epat_eod.csv")
+DATA_URL = "https://hilpisch.com/nov25eod.csv"
 
 
 class LagOLSBacktest:
@@ -28,7 +27,7 @@ class LagOLSBacktest:
     strategy from the sign of the model's forecast.
     """
 
-    def __init__(self, csv_path: str="data/epat_eod.csv",
+    def __init__(self, csv_path: str="data/nov25eod.csv",
                  column: str="EURUSD", lags: int=7, cost: float=0.0001) -> None:
         """Initialize backtest with data source, lags, and cost model."""
         self.csv_path = csv_path  # path to CSV file with EOD prices

@@ -47,7 +47,7 @@ The notebook is the interactive companion to the article’s EMH benchmark and t
 
 Highlights:
 
-- Loads daily EURUSD prices from `data/epat_eod.csv` and inspects the series.
+- Loads daily EURUSD prices from `data/nov25eod.csv` and inspects the series.
 - Defines `make_lagged_returns(...)` to:
   - compute log-returns,  
   - build a design matrix of lagged returns (by default seven lags), and  
@@ -74,7 +74,7 @@ Highlights:
 - Defines simple event dataclasses:
   - `MarketEvent`, `SignalEvent`, `OrderEvent`, and `FillEvent`.
 - Implements the four core components described in the article:
-  - `CSVDataHandler` streams EURUSD prices from `data/epat_eod.csv` as market events,  
+  - `CSVDataHandler` streams EURUSD prices from `data/nov25eod.csv` as market events,  
   - `SimpleMomentumStrategy` emits signals based on the sign of yesterday’s log-return,  
   - `SimplePortfolio` tracks position, cash, and equity over time, and  
   - `NaiveExecutionHandler` converts orders into fills at the latest observed price.

@@ -59,8 +59,7 @@ class OrderEvent(Event):
 
 from pathlib import Path
 
-DATA_URL = ("https://raw.githubusercontent.com/yhilpisch/epatcode/"
-            "refs/heads/main/data/epat_eod.csv")
+DATA_URL = "https://hilpisch.com/nov25eod.csv"
 
 
 @dataclass
@@ -78,7 +77,7 @@ class FillEvent(Event):
 class CSVDataHandler:
     """Streams daily prices from a CSV file as MarketEvent objects."""
 
-    def __init__(self, path: str="data/epat_eod.csv",
+    def __init__(self, path: str="data/nov25eod.csv",
                  column: str="EURUSD") -> None:
         local_path = Path(path)
         if local_path.is_file():
