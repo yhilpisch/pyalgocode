@@ -1,0 +1,59 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.env
+*.venv
+ticks.*
+venv/
+env/
+.venv/
+.mypy_cache/
+.pytest_cache/
+.tox/
+.DS_Store
+
+# Jupyter
+.ipynb_checkpoints/
+
+# LaTeX build files
+_minted/
+*.aux
+*.bbl
+*.listing
+*.bcf
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.nav
+*.out
+*.snm
+*.synctex.gz
+*.synctex(busy)
+*.toc
+*.vrb
+*.xdv
+*.run.xml
+*.lof
+*.lot
+*.lol
+
+# LaTeX intermediate graphics
+*.eps
+*.dvi
+*.ps
+*.pdfsync
+
+# Editors
+*~
+*.swp
+*.swo
+.vscode/
+.idea/
+
+# Project-specific
+ref/
+*.pdf
+*.png
