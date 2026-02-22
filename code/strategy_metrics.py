@@ -4,8 +4,8 @@ import pandas as pd
 """
 Computation of return and risk metrics for one or more P&L or return series.
 
-The core class, StrategyMetrics, accepts either P&L levels \(x_t\) or periodic
-returns \(r_t\) for one or several strategies, computes a suite of diagnostics,
+The core class, StrategyMetrics, accepts either P&L levels `x_t` or periodic
+returns `r_t` for one or several strategies, computes a suite of diagnostics,
 and returns a pandas DataFrame whose rows are metrics and whose columns are
 individual series.
 
@@ -19,7 +19,7 @@ The metrics mirror the concepts discussed in the appendix "When is a Strategy
 - maximum drawdown and drawdown duration
 - hit rate and skewness of the return distribution
 
-In the main block, three instruments from data/nov25eod.csv are loaded and
+In the main block, three instruments from data/epat_eod.csv are loaded and
 compared side by side using these metrics.
 
 (c) Dr. Yves J. Hilpisch
@@ -66,8 +66,8 @@ class StrategyMetrics:
     @staticmethod
     def _to_returns_from_pnl(pnl: pd.Series) -> pd.Series:
         """Convert a P&L / equity series x_t into simple returns r_t."""
-        pnl = pnl.sort_index()  #  ensure chronological order
-        rets = pnl.pct_change(fill_method=None).dropna()  #  r_t = x_t/x_{t-1} - 1
+        pnl = pnl.sort_index()  # ensure chronological order
+        rets = pnl.pct_change(fill_method=None).dropna()  # r_t = x_t/x_{t-1} - 1
         return rets
 
     def _ensure_returns(
@@ -80,7 +80,7 @@ class StrategyMetrics:
             data_df = data.copy()
         if from_pnl:
             data_df = data_df.apply(self._to_returns_from_pnl)
-        data_df = data_df.dropna(how="all")  #  drop rows that are all NaN
+        data_df = data_df.dropna(how="all")  # drop rows that are all NaN
         return data_df
 
     def _align_with_benchmark(self, rets: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series | None]:
@@ -88,7 +88,7 @@ class StrategyMetrics:
         if self.benchmark is None:
             return rets, None
         bench = self.benchmark.sort_index().dropna()
-        #  align on common dates
+        # align on common dates
         joint = rets.join(bench.to_frame("benchmark"), how="inner")
         rets_aligned = joint[rets.columns]
         bench_aligned = joint["benchmark"]
@@ -98,7 +98,7 @@ class StrategyMetrics:
     def _max_drawdown_and_duration(equity: np.ndarray) -> tuple[float, int]:
         """Compute maximum drawdown and its duration for one equity curve."""
         peak = np.maximum.accumulate(equity)
-        dd = equity / peak - 1.0  #  drawdown series
+        dd = equity / peak - 1.0  # drawdown series
         underwater = dd < 0.0
         max_dur = 0
         cur = 0
@@ -122,18 +122,18 @@ class StrategyMetrics:
         if rets_clean.empty:
             raise ValueError(f"no valid returns for series '{name}'")
 
-        mu = float(rets_clean.mean())  #  average periodic return
-        sigma = float(rets_clean.std(ddof=1))  #  periodic volatility
+        mu = float(rets_clean.mean())  # average periodic return
+        sigma = float(rets_clean.std(ddof=1))  # periodic volatility
 
-        #  annualized quantities
+        # annualized quantities
         ann_ret = (1.0 + mu) ** self.periods_per_year - 1.0
         ann_vol = sigma * np.sqrt(self.periods_per_year)
 
-        #  total and annualized return from compounded equity
+        # total and annualized return from compounded equity
         equity = np.cumprod(1.0 + rets_clean.to_numpy())
         total_ret = float(equity[-1] - 1.0)
 
-        #  Sharpe ratio based on periodic risk-free rate
+        # Sharpe ratio based on periodic risk-free rate
         rf = self.risk_free_rate
         excess_periodic = mu - rf
         sharpe = (
@@ -142,9 +142,9 @@ class StrategyMetrics:
             else np.nan
         )
 
-        #  Sortino ratio using downside deviation
+        # Sortino ratio using downside deviation
         target = self.sortino_target
-        downside = rets_clean[rets_clean < target]  #  downside tail
+        downside = rets_clean[rets_clean < target]  # downside tail
         if downside.empty:
             sortino = np.nan
         else:
@@ -158,10 +158,10 @@ class StrategyMetrics:
                 else np.nan
             )
 
-        #  drawdown statistics from equity curve
+        # drawdown statistics from equity curve
         max_dd, dd_dur = self._max_drawdown_and_duration(equity)
 
-        #  hit rate and skewness
+        # hit rate and skewness
         hit_rate = float((rets_clean > 0.0).mean())
         centered = rets_clean - mu
         if sigma > 0.0:
@@ -169,7 +169,7 @@ class StrategyMetrics:
         else:
             skew = np.nan
 
-        #  excess return metrics relative to benchmark, if provided
+        # excess return metrics relative to benchmark, if provided
         if bench_rets is not None:
             aligned = rets_clean.to_frame("s").join(
                 bench_rets.to_frame("b"), how="inner"
@@ -222,8 +222,8 @@ class StrategyMetrics:
 
         result = pd.DataFrame(metrics)
 
-        #  Order metrics so that annualized and excess quantities are
-        #  grouped together, followed by risk and distributional stats.
+        # Order metrics so that annualized and excess quantities are
+        # grouped together, followed by risk and distributional stats.
         metric_order = [
             "total_return",
             "ann_return",
@@ -275,23 +275,23 @@ class StrategyMetrics:
         return result
 
 
-def _load_prices(csv_path: str = "data/nov25eod.csv") -> pd.DataFrame:
+def _load_prices(csv_path: str = "data/epat_eod.csv") -> pd.DataFrame:
     """Load daily prices for multiple instruments from the example CSV file."""
     df = pd.read_csv(csv_path, parse_dates=["Date"])
     df = df.set_index("Date")
-    prices = df.astype(float).dropna(how="all")  #  drop rows with all NaN
+    prices = df.astype(float).dropna(how="all")  # drop rows with all NaN
     return prices
 
 
 if __name__ == "__main__":
-    #  Example: compare three instruments from the example data set.
+    # Example: compare three instruments from the example data set.
     prices_all = _load_prices()
 
-    #  Select three representative series; all are daily and fairly liquid.
+    # Select three representative series; all are daily and fairly liquid.
     cols = ["EURUSD", "SPY", "AAPL"]
     prices = prices_all[cols]
 
-    #  Use SPY as a simple benchmark when computing excess-return metrics.
+    # Use SPY as a simple benchmark when computing excess-return metrics.
     benchmark_returns = prices["SPY"].pct_change(fill_method=None).dropna()
 
     metrics_engine = StrategyMetrics(
@@ -301,11 +301,11 @@ if __name__ == "__main__":
         benchmark=benchmark_returns,
     )
 
-    #  Treat the three price columns as individual P&L series (indexed by date).
+    # Treat the three price columns as individual P&L series (indexed by date).
     summary = metrics_engine.summarize_from_pnl(prices)
 
-    #  Print a rounded overview with metrics as index and instruments as columns.
-    print("Strategy metrics for selected instruments from data/nov25eod.csv\n")
+    # Print a rounded overview with metrics as index and instruments as columns.
+    print("Strategy metrics for selected instruments from data/epat_eod.csv\n")
     decimals = {
         "total_return": 3,
         "ann_return": 4,
@@ -313,7 +313,7 @@ if __name__ == "__main__":
         "sharpe": 2,
         "sortino": 2,
         "max_drawdown": 3,
-        "dd_duration": 0,  #  integer-style display (no decimals)
+        "dd_duration": 0,  # integer-style display (no decimals)
         "hit_rate": 3,
         "skewness": 3,
         "ex_ann_return": 4,
@@ -321,9 +321,9 @@ if __name__ == "__main__":
         "ex_sharpe": 2,
     }
 
-    #  Build a string-formatted DataFrame so that each metric can use its
-    #  own number of decimal places (dd_duration without decimals, others
-    #  with the requested precision).
+    # Build a string-formatted DataFrame so that each metric can use its
+    # own number of decimal places (dd_duration without decimals, others
+    # with the requested precision).
     formatted = summary.copy().astype(object)
     for metric, dec in decimals.items():
         if metric not in summary.index:

@@ -12,12 +12,12 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from pathlib import Path
 
-DATA_URL = "https://hilpisch.com/nov25eod.csv"
+DATA_URL = "https://hilpisch.com/epat_eod.csv"
 
 plt.style.use("seaborn-v0_8")
 
 
-def load_prices(path: str="data/nov25eod.csv",
+def load_prices(path: str="data/epat_eod.csv",
                 column: str="EURUSD") -> pd.Series:
     """Load end-of-day prices for a single instrument.
 
@@ -40,7 +40,7 @@ def make_lagged_returns(prices: pd.Series,
                         lags: int=7) -> tuple[np.ndarray, np.ndarray, pd.DatetimeIndex]:
     """Compute log-returns and build a lagged design matrix."""
     log_prices = np.log(prices.to_numpy())
-    rets = np.diff(log_prices)  #  r_t = log S_t - log S_{t-1}
+    rets = np.diff(log_prices)  # r_t = log S_t - log S_{t-1}
     dates = prices.index[1:]
 
     n = rets.shape[0]
@@ -49,15 +49,15 @@ def make_lagged_returns(prices: pd.Series,
 
     X = np.column_stack(
         [rets[(lags - k):(n - k)] for k in range(1, lags + 1)]
-    )  #  columns r_{t-1},...,r_{t-lags}
-    y = rets[lags:]  #  target r_t
-    dates_eff = dates[lags:]  #  effective dates for y and X rows
+    )  # columns r_{t-1},...,r_{t-lags}
+    y = rets[lags:]  # target r_t
+    dates_eff = dates[lags:]  # effective dates for y and X rows
     return X, y, dates_eff
 
 
 def fit_ols(X: np.ndarray, y: np.ndarray) -> np.ndarray:
     """Estimate linear model y = beta_0 + X beta via OLS."""
-    X_design = np.column_stack([np.ones(X.shape[0]), X])  #  add intercept column
+    X_design = np.column_stack([np.ones(X.shape[0]), X])  # add intercept column
     beta = np.linalg.lstsq(X_design, y, rcond=None)[0]
     return beta
 
@@ -67,13 +67,13 @@ def run_lag_strategy(X: np.ndarray, y: np.ndarray,
                      cost: float=0.0001) -> np.ndarray:
     """Compute strategy returns from lagged OLS predictions."""
     X_design = np.column_stack([np.ones(X.shape[0]), X])
-    y_pred = X_design @ beta  #  one-step-ahead forecasts
+    y_pred = X_design @ beta  # one-step-ahead forecasts
 
-    pos = np.sign(y_pred)  #  -1, 0, or +1 depending on forecast sign
-    strat_rets = pos * y  #  gross strategy returns; prediction for r_t applied to r_t
+    pos = np.sign(y_pred)  # -1, 0, or +1 depending on forecast sign
+    strat_rets = pos * y  # gross strategy returns; prediction for r_t applied to r_t
 
-    turnover = np.abs(pos[1:] - pos[:-1])  #  trades per step
-    strat_rets[1:] = strat_rets[1:] - cost * turnover  #  apply transaction costs
+    turnover = np.abs(pos[1:] - pos[:-1])  # trades per step
+    strat_rets[1:] = strat_rets[1:] - cost * turnover  # apply transaction costs
     return strat_rets
 
 
@@ -82,13 +82,14 @@ def plot_equity(dates: pd.DatetimeIndex,
                 strat_rets: np.ndarray,
                 outfile: str="figures/vecback_lag_ols_equity.pdf") -> None:
     """Plot equity curves for buy-and-hold, strategy, and coin-flip control."""
-    eq_bh = np.cumprod(1.0 + y)
-    eq_strat = np.cumprod(1.0 + strat_rets)
+    # Returns are log-returns, so equity is exp(cumulative log-return).
+    eq_bh = np.exp(np.cumsum(y))
+    eq_strat = np.exp(np.cumsum(strat_rets))
 
     rng = np.random.default_rng(seed=42)
-    coin_pos = rng.choice([-1.0, 1.0], size=y.shape[0])  #  random long/short
+    coin_pos = rng.choice([-1.0, 1.0], size=y.shape[0])  # random long/short
     coin_rets = coin_pos * y
-    eq_coin = np.cumprod(1.0 + coin_rets)
+    eq_coin = np.exp(np.cumsum(coin_rets))
 
     fig, ax = plt.subplots(figsize=(7, 4))
     ax.plot(dates, eq_strat, label="Lag-OLS strategy")
@@ -108,7 +109,7 @@ def plot_equity(dates: pd.DatetimeIndex,
 def max_drawdown_and_duration(equity: np.ndarray) -> tuple[float, int]:
     """Compute maximum drawdown and its duration (in periods)."""
     peak = np.maximum.accumulate(equity)
-    dd = equity / peak - 1.0  #  drawdown series (<= 0)
+    dd = equity / peak - 1.0  # drawdown series (<= 0)
     underwater = dd < 0.0
     max_dur = 0
     cur = 0
@@ -142,8 +143,8 @@ if __name__ == "__main__":
     strat_rets = run_lag_strategy(X, y, beta)
     plot_equity(dates, y, strat_rets)
 
-    bh_eq = np.cumprod(1.0 + y)
-    strat_eq = np.cumprod(1.0 + strat_rets)
+    bh_eq = np.exp(np.cumsum(y))
+    strat_eq = np.exp(np.cumsum(strat_rets))
 
     total_ret_bh = float(bh_eq[-1] - 1.0)
     total_ret_strat = float(strat_eq[-1] - 1.0)

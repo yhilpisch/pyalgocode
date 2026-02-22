@@ -33,15 +33,15 @@ def simulate_signal_and_returns(
         Standard deviation of the noise term.
     """
     rng = np.random.default_rng(seed=7)
-    x = rng.normal(0.0, 1.0, size=steps)  #  synthetic signal series
-    eps = rng.normal(0.0, sigma_eps, size=steps)  #  noise term
-    r = alpha_true + beta_true * x + eps  #  linear relation plus noise
+    x = rng.normal(0.0, 1.0, size=steps)  # synthetic signal series
+    eps = rng.normal(0.0, sigma_eps, size=steps)  # noise term
+    r = alpha_true + beta_true * x + eps  # linear relation plus noise
     return x, r
 
 
 def ols_fit(x: np.ndarray, r: np.ndarray) -> tuple[float, float]:
     """Estimate alpha and beta via ordinary least squares."""
-    X = np.column_stack([np.ones_like(x), x])  #  design matrix with intercept
+    X = np.column_stack([np.ones_like(x), x])  # design matrix with intercept
     alpha_hat, beta_hat = np.linalg.lstsq(X, r, rcond=None)[0]
     return float(alpha_hat), float(beta_hat)
 
@@ -54,7 +54,7 @@ def plot_signal_regression(
     outfile: str="figures/ols_signal_example.pdf",
 ) -> None:
     """Create scatter plot and fitted regression line for signal vs returns."""
-    x_line = np.linspace(x.min(), x.max(), 100)  #  grid for fitted line
+    x_line = np.linspace(x.min(), x.max(), 100)  # grid for fitted line
     r_line = alpha_hat + beta_hat * x_line
 
     fig, ax = plt.subplots(figsize=(6, 4))

@@ -30,15 +30,15 @@ plt.style.use("seaborn-v0_8")
 class Event:
     """Base class for all events."""
 
-    type: str  #  marker for dispatch in the event loop
+    type: str  # marker for dispatch in the event loop
 
 
 @dataclass
 class MarketEvent(Event):
     """Represents a new market bar for a single instrument."""
 
-    time_index: pd.Timestamp  #  timestamp of the new bar
-    price: float  #  last traded price
+    time_index: pd.Timestamp  # timestamp of the new bar
+    price: float  # last traded price
 
 
 @dataclass
@@ -59,7 +59,7 @@ class OrderEvent(Event):
 
 from pathlib import Path
 
-DATA_URL = "https://hilpisch.com/nov25eod.csv"
+DATA_URL = "https://hilpisch.com/epat_eod.csv"
 
 
 @dataclass
@@ -77,7 +77,7 @@ class FillEvent(Event):
 class CSVDataHandler:
     """Streams daily prices from a CSV file as MarketEvent objects."""
 
-    def __init__(self, path: str="data/nov25eod.csv",
+    def __init__(self, path: str="data/epat_eod.csv",
                  column: str="EURUSD") -> None:
         local_path = Path(path)
         if local_path.is_file():
@@ -86,7 +86,7 @@ class CSVDataHandler:
             src = DATA_URL
             print(f"Local data file {local_path} not found, loading from {DATA_URL}")
         df = pd.read_csv(src, parse_dates=["Date"]).set_index("Date")
-        prices = df[column].astype(float).dropna()  #  clean symbol series
+        prices = df[column].astype(float).dropna()  # clean symbol series
         self.prices = prices
         self.iterator = iter(prices.items())
         self.continue_backtest = True
@@ -152,11 +152,11 @@ class SimplePortfolio:
 
     def __init__(self, initial_cash: float=1.0) -> None:
         self.initial_cash = initial_cash
-        self.position = 0.0  #  number of units held (can be negative)
+        self.position = 0.0  # number of units held (can be negative)
         self.cash = initial_cash
         self.equity_history: List[float] = []
         self.dates: List[pd.Timestamp] = []
-        self.latest_price: float | None = None  #  last observed market price
+        self.latest_price: float | None = None  # last observed market price
 
     def on_market_event(self, event: MarketEvent) -> None:
         """Update equity based on the latest market price."""
@@ -245,7 +245,7 @@ def plot_equity(dates: List[pd.Timestamp],
 def max_drawdown_and_duration(equity: np.ndarray) -> tuple[float, int]:
     """Compute maximum drawdown and its duration (in periods)."""
     peak = np.maximum.accumulate(equity)
-    dd = equity / peak - 1.0  #  drawdown series (<= 0)
+    dd = equity / peak - 1.0  # drawdown series (<= 0)
     underwater = dd < 0.0
     max_dur = 0
     cur = 0

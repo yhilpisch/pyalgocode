@@ -72,7 +72,7 @@ Implements a fully vectorized backtest of a lagged-returns OLS strategy on daily
 
 Key elements:
 
-- Loads EURUSD prices from `data/nov25eod.csv` and converts them to log-returns.
+- Loads EURUSD prices from `data/epat_eod.csv` and converts them to log-returns.
 - Builds a design matrix of lagged returns (for example, seven lags) and fits an OLS model to predict the next return.
 - Converts predictions into long/short positions using the sign of the forecast, lagged by one day to avoid look-ahead bias.
 - Applies a simple proportional transaction-cost model based on turnover.
@@ -210,11 +210,11 @@ Key elements:
   - hit rate and skewness of the return distribution, and
   - excess-return statistics relative to an optional benchmark.
 - Returns a `pandas.DataFrame` with metrics as the index and series names as columns, ready to be exported or merged with other reports.
-- In the main block, loads three instruments (`EURUSD`, `SPY`, `AAPL`) from `data/nov25eod.csv`, uses `SPY` as a benchmark, and prints a rounded overview of the metrics for all three.
+- In the main block, loads three instruments (`EURUSD`, `SPY`, `AAPL`) from `data/epat_eod.csv`, uses `SPY` as a benchmark, and prints a rounded overview of the metrics for all three.
 
 - Each script can be explored independently, but running them in the order outlined above mirrors the narrative progression of the article from EMH benchmarks to streaming and causality analysis.
 ## Usage Notes
 
 - All scripts assume a standard virtual Python environment with `numpy`, `pandas`, `matplotlib`, and, where applicable, `statsmodels`, `pyzmq`, and `sqlite3` installed.
-- Paths to data files (`data/nov25eod.csv`) and output figures (`figures/...`) are relative to the project root.
+- Paths to data files (`data/epat_eod.csv`) and output figures (`figures/...`) are relative to the project root.
 - Each script can be explored independently, but running them in the order outlined above mirrors the narrative progression of the article from EMH benchmarks to streaming and causality analysis.

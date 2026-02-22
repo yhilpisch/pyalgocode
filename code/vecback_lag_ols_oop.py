@@ -15,7 +15,7 @@ from pathlib import Path
 plt.style.use("seaborn-v0_8")
 
 
-DATA_URL = "https://hilpisch.com/nov25eod.csv"
+DATA_URL = "https://hilpisch.com/epat_eod.csv"
 
 
 class LagOLSBacktest:
@@ -27,7 +27,7 @@ class LagOLSBacktest:
     strategy from the sign of the model's forecast.
     """
 
-    def __init__(self, csv_path: str="data/nov25eod.csv",
+    def __init__(self, csv_path: str="data/epat_eod.csv",
                  column: str="EURUSD", lags: int=7, cost: float=0.0001) -> None:
         """Initialize backtest with data source, lags, and cost model."""
         self.csv_path = csv_path  # path to CSV file with EOD prices
@@ -118,7 +118,7 @@ def max_drawdown_and_duration(equity: np.ndarray) -> tuple[float, int]:
     """Compute maximum drawdown and its duration (in periods)."""
 
     peak = np.maximum.accumulate(equity)
-    dd = equity / peak - 1.0  #  drawdown series (<= 0)
+    dd = equity / peak - 1.0  # drawdown series (<= 0)
     underwater = dd < 0.0
     max_dur = 0
     cur = 0

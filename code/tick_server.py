@@ -27,13 +27,13 @@ def run_tick_server(bind_addr: str="tcp://127.0.0.1:5555",
     socket = ctx.socket(zmq.PUB)
     socket.bind(bind_addr)
 
-    price = start_price  #  initial level of the random walk
+    price = start_price  # initial level of the random walk
     rng = np.random.default_rng(seed=42)
 
     try:
         while True:
-            shock = rng.normal(0.0, sigma)  #  small random move
-            price = max(0.1, price + shock)  #  keep price positive
+            shock = rng.normal(0.0, sigma)  # small random move
+            price = max(0.1, price + shock)  # keep price positive
             payload = {
                 "time": datetime.now(timezone.utc).isoformat(),
                 "symbol": symbol,

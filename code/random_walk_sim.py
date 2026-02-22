@@ -33,8 +33,8 @@ def simulate_random_walk(steps: int=252, paths: int=10,
     """
     rng = np.random.default_rng(seed=42)
     log_returns = rng.normal(mu, sigma, size=(steps, paths))
-    log_returns[0] = 0.0  #  start all paths exactly at s0
-    prices = s0 * np.exp(log_returns.cumsum(axis=0))  #  geometric random walk
+    log_returns[0] = 0.0  # start all paths exactly at s0
+    prices = s0 * np.exp(log_returns.cumsum(axis=0))  # geometric random walk
     return prices, log_returns
 
 
@@ -43,7 +43,7 @@ def plot_random_walk(prices: np.ndarray, log_returns: np.ndarray,
     """Plot price paths and log-return histogram and save to a file."""
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 3))
 
-    ax1.plot(prices)  #  simulated price paths
+    ax1.plot(prices)  # simulated price paths
     ax1.set_title("Random walk price paths")
     ax1.set_xlabel("time step")
     ax1.set_ylabel("price level")

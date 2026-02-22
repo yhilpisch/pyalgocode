@@ -39,7 +39,7 @@ def run_tick_database(connect_addr: str="tcp://127.0.0.1:5555",
     ctx = zmq.Context.instance()
     socket = ctx.socket(zmq.SUB)
     socket.connect(connect_addr)
-    socket.setsockopt_string(zmq.SUBSCRIBE, "")  #  receive all symbols
+    socket.setsockopt_string(zmq.SUBSCRIBE, "")  # receive all symbols
 
     try:
         while True:
