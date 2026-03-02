@@ -13,7 +13,7 @@ Each notebook combines Markdown explanations with fully commented Python code so
 ## Meta Information
 
 - &copy; Dr. Yves J. Hilpisch  
-- AI-Powered by GPT 5.1  
+- AI-Powered by GPT 5.x  
 - The Python Quants GmbH · <https://tpq.io>  
 - <https://hilpisch.com> · <https://linktr.ee/dyjh>
 
