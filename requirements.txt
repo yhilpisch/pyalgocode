@@ -1,0 +1,15 @@
+# Core numerical and data stack
+numpy>=1.24
+pandas>=2.0
+matplotlib>=3.7
+statsmodels>=0.14
+
+# Streaming examples
+pyzmq>=25.0
+
+# Notebook and validation tooling
+ipython>=8.0
+jupyterlab>=4.0
+ipykernel>=6.0
+nbformat>=5.9
+nbclient>=0.10
