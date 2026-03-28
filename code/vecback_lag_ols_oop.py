@@ -91,8 +91,10 @@ class LagOLSBacktest:
         """Return buy-and-hold and strategy equity curves as a DataFrame."""
         if self.strat_rets is None:
             self.run_strategy()
-        eq_bh = np.cumprod(1.0 + self.y)  # buy & hold equity curve
-        eq_strat = np.cumprod(1.0 + self.strat_rets)  # type: ignore[arg-type]
+        # self.y and self.strat_rets are log-returns, so equity is
+        # obtained via exp of cumulative log-returns.
+        eq_bh = np.exp(np.cumsum(self.y))  # buy & hold equity curve
+        eq_strat = np.exp(np.cumsum(self.strat_rets))  # type: ignore[arg-type]
         return pd.DataFrame(
             {"eq_bh": eq_bh, "eq_strat": eq_strat},
             index=self.dates,
