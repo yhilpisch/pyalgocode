@@ -73,17 +73,17 @@ def _event_results() -> dict[str, float]:
     engine = ebm.BacktestEngine(data_handler, strategy, portfolio, execution)
     engine.run()
 
-    ebm.plot_equity(
-        portfolio.dates,
-        portfolio.equity_history,
-        outfile=str(FIG_DIR / "event_back_minimal_equity.pdf"),
-    )
-
     eq_arr = np.asarray(portfolio.equity_history)
     eq_norm = eq_arr / eq_arr[0]
 
     prices_eff = data_handler.prices.loc[portfolio.dates]
     eq_bh = prices_eff.to_numpy() / float(prices_eff.iloc[0])
+    ebm.plot_equity(
+        portfolio.dates,
+        portfolio.equity_history,
+        benchmark=eq_bh,
+        outfile=str(FIG_DIR / "event_back_minimal_equity.pdf"),
+    )
 
     log_ret_bh = np.diff(np.log(eq_bh))
     log_ret_evt = np.diff(np.log(eq_norm))

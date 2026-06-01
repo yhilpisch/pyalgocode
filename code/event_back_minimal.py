@@ -15,7 +15,7 @@ DataHandler -> Strategy -> Portfolio -> Execution, all connected
 through a simple event queue processed by BacktestEngine.
 
 (c) Dr. Yves J. Hilpisch
-AI-Powered by GPT 5.1
+AI-Powered by different LLMs
 The Python Quants GmbH | https://tpq.io
 https://hilpisch.com | https://linktr.ee/dyjh
 """
@@ -154,9 +154,9 @@ class SimplePortfolio:
         self.initial_cash = initial_cash
         self.position = 0.0  # number of units held (can be negative)
         self.cash = initial_cash
-        self.equity_history: List[float] = []
-        self.dates: List[pd.Timestamp] = []
-        self.latest_price: float | None = None  # last observed market price
+        self.equity_history: List[float]=[]
+        self.dates: List[pd.Timestamp]=[]
+        self.latest_price: float | None=None  # last observed market price
 
     def on_market_event(self, event: MarketEvent) -> None:
         """Update equity based on the latest market price."""
@@ -200,7 +200,7 @@ class BacktestEngine:
         self.strategy = strategy
         self.portfolio = portfolio
         self.execution = execution
-        self.events: Deque[Event] = deque()
+        self.events: Deque[Event]=deque()
 
     def run(self) -> None:
         """Main event loop: process data, signals, orders, and fills."""
@@ -224,15 +224,20 @@ class BacktestEngine:
                     self.portfolio.on_fill_event(event)
 
 
-def plot_equity(dates: List[pd.Timestamp],
-                equity: List[float],
-                outfile: str="figures/event_back_minimal_equity.pdf") -> None:
-    """Plot normalized equity curve for the event-based strategy."""
+def plot_equity(
+    dates: List[pd.Timestamp],
+    equity: List[float],
+    benchmark: np.ndarray | None=None,
+    outfile: str="figures/event_back_minimal_equity.pdf",
+) -> None:
+    """Plot normalized equity curves for the strategy and buy-and-hold."""
     eq_arr = np.asarray(equity)
     eq_norm = eq_arr / eq_arr[0]
 
     fig, ax = plt.subplots(figsize=(7, 4))
     ax.plot(dates, eq_norm, label="Event-based momentum strategy on EURUSD")
+    if benchmark is not None:
+        ax.plot(dates, benchmark, label="Buy & hold (EURUSD)", ls="--", lw=1.0)
     ax.set_xlabel("date")
     ax.set_ylabel("equity (normalized)")
     ax.set_title("Minimal event-based backtest on EURUSD")
@@ -266,7 +271,6 @@ if __name__ == "__main__":
     execution = NaiveExecutionHandler()
     engine = BacktestEngine(data_handler, strategy, portfolio, execution)
     engine.run()
-    plot_equity(portfolio.dates, portfolio.equity_history)
 
     eq_arr = np.asarray(portfolio.equity_history)
     eq_norm = eq_arr / eq_arr[0]
@@ -274,6 +278,7 @@ if __name__ == "__main__":
     # benchmark: buy-and-hold equity on the same dates
     prices_eff = data_handler.prices.loc[portfolio.dates]
     eq_bh = prices_eff.to_numpy() / float(prices_eff.iloc[0])
+    plot_equity(portfolio.dates, portfolio.equity_history, benchmark=eq_bh)
 
     # log-returns for benchmark and strategy
     log_ret_bh = np.diff(np.log(eq_bh))

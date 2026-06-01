@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 Random-walk simulation and visualization for prices and returns.
 
 (c) Dr. Yves J. Hilpisch
-AI-Powered by GPT 5.1
+AI-Powered by different LLMs
 The Python Quants GmbH | https://tpq.io
 https://hilpisch.com | https://linktr.ee/dyjh
 """
@@ -39,7 +39,7 @@ def simulate_random_walk(steps: int=252, paths: int=10,
 
 
 def plot_random_walk(prices: np.ndarray, log_returns: np.ndarray,
-                     outfile: str = "figures/random_walk_sim.pdf") -> None:
+                     outfile: str="figures/random_walk_sim.pdf") -> None:
     """Plot price paths and log-return histogram and save to a file."""
     fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(8, 3))
 

@@ -23,7 +23,7 @@ In the main block, three instruments from data/epat_eod.csv are loaded and
 compared side by side using these metrics.
 
 (c) Dr. Yves J. Hilpisch
-AI-Powered by GPT 5.1
+AI-Powered by different LLMs
 The Python Quants GmbH | https://tpq.io
 https://hilpisch.com | https://linktr.ee/dyjh
 """
@@ -53,10 +53,10 @@ class StrategyMetrics:
 
     def __init__(
         self,
-        periods_per_year: int = 252,
-        risk_free_rate: float = 0.0,
-        sortino_target: float = 0.0,
-        benchmark: pd.Series | None = None,
+        periods_per_year: int=252,
+        risk_free_rate: float=0.0,
+        sortino_target: float=0.0,
+        benchmark: pd.Series | None=None,
     ) -> None:
         self.periods_per_year = periods_per_year
         self.risk_free_rate = risk_free_rate
@@ -83,7 +83,10 @@ class StrategyMetrics:
         data_df = data_df.dropna(how="all")  # drop rows that are all NaN
         return data_df
 
-    def _align_with_benchmark(self, rets: pd.DataFrame) -> tuple[pd.DataFrame, pd.Series | None]:
+    def _align_with_benchmark(
+        self,
+        rets: pd.DataFrame,
+    ) -> tuple[pd.DataFrame, pd.Series | None]:
         """Align strategy returns with the benchmark if one is provided."""
         if self.benchmark is None:
             return rets, None
@@ -95,10 +98,12 @@ class StrategyMetrics:
         return rets_aligned, bench_aligned
 
     @staticmethod
-    def _max_drawdown_and_duration(equity: np.ndarray) -> tuple[float, int]:
+    def _max_drawdown_and_duration(
+        equity: np.ndarray,
+    ) -> tuple[float, int]:
         """Compute maximum drawdown and its duration for one equity curve."""
         peak = np.maximum.accumulate(equity)
-        dd = equity / peak - 1.0  # drawdown series
+        dd = equity / peak - 1.0  # drawdowns
         underwater = dd < 0.0
         max_dur = 0
         cur = 0
@@ -275,7 +280,7 @@ class StrategyMetrics:
         return result
 
 
-def _load_prices(csv_path: str = "data/epat_eod.csv") -> pd.DataFrame:
+def _load_prices(csv_path: str="data/epat_eod.csv") -> pd.DataFrame:
     """Load daily prices for multiple instruments from the example CSV file."""
     df = pd.read_csv(csv_path, parse_dates=["Date"])
     df = df.set_index("Date")

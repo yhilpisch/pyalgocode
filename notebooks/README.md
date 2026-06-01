@@ -13,7 +13,7 @@ Each notebook combines Markdown explanations with fully commented Python code so
 ## Meta Information
 
 - &copy; Dr. Yves J. Hilpisch  
-- AI-Powered by GPT 5.x  
+- AI-Powered by different LLMs  
 - The Python Quants GmbH · <https://tpq.io>  
 - <https://hilpisch.com> · <https://linktr.ee/dyjh>
 
@@ -78,6 +78,9 @@ Highlights:
   - `SimpleMomentumStrategy` emits signals based on the sign of yesterday’s log-return,  
   - `SimplePortfolio` tracks position, cash, and equity over time, and  
   - `NaiveExecutionHandler` converts orders into fills at the latest observed price.
+- Shows how the same strategy can be extended from a one-day momentum rule to
+  a multi-lag version by averaging several recent log-returns before forming
+  the trading signal.
 - Wraps everything into a small `BacktestEngine` that processes events from a `deque`, mirroring the architectural diagram from the slides.
 - Runs the backtest and plots a normalized equity curve for the event-based momentum strategy.
 

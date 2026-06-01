@@ -2,7 +2,7 @@
 Granger-causality test using statsmodels on synthetic return series.
 
 (c) Dr. Yves J. Hilpisch
-AI-Powered by GPT 5.1
+AI-Powered by different LLMs
 The Python Quants GmbH | https://tpq.io
 https://hilpisch.com | https://linktr.ee/dyjh
 """
@@ -38,4 +38,3 @@ def run_granger_tests(max_lag: int=2) -> None:
 
 if __name__ == "__main__":
     run_granger_tests()
-

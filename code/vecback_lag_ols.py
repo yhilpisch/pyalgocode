@@ -2,7 +2,7 @@
 Vectorized lagged-returns OLS backtest on EURUSD.
 
 (c) Dr. Yves J. Hilpisch
-AI-Powered by GPT 5.1
+AI-Powered by different LLMs
 The Python Quants GmbH | https://tpq.io
 https://hilpisch.com | https://linktr.ee/dyjh
 """
@@ -37,7 +37,8 @@ def load_prices(path: str="data/epat_eod.csv",
 
 
 def make_lagged_returns(prices: pd.Series,
-                        lags: int=7) -> tuple[np.ndarray, np.ndarray, pd.DatetimeIndex]:
+                        lags: int=7
+                        ) -> tuple[np.ndarray, np.ndarray, pd.DatetimeIndex]:
     """Compute log-returns and build a lagged design matrix."""
     log_prices = np.log(prices.to_numpy())
     rets = np.diff(log_prices)  # r_t = log S_t - log S_{t-1}

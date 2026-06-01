@@ -13,7 +13,7 @@ event-based backtesting, streaming tick data, and basic causality diagnostics.
 ## Copyright and Contact
 
 - &copy; Dr. Yves J. Hilpisch  
-- AI-Powered by GPT 5.x  
+- AI-Powered by different LLMs  
 - The Python Quants GmbH · <https://tpq.io>  
 - <https://hilpisch.com> · <https://linktr.ee/dyjh>
 

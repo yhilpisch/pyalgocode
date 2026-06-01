@@ -2,7 +2,7 @@
 Toy example illustrating Granger causality between two return series.
 
 (c) Dr. Yves J. Hilpisch
-AI-Powered by GPT 5.1
+AI-Powered by different LLMs
 The Python Quants GmbH | https://tpq.io
 https://hilpisch.com | https://linktr.ee/dyjh
 """
@@ -99,8 +99,6 @@ def main() -> None:
     fig.savefig("figures/granger_r2_comparison.pdf", bbox_inches="tight")
     plt.close(fig)  # free figure resources
 
-    x, y = simulate_coupled_returns()
-    r2_y, r2_xy = simple_granger_regression(x, y)
     print({"R2_y_only": r2_y, "R2_y_and_x": r2_xy})  # simple textual summary
 
 
