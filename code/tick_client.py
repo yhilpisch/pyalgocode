@@ -1,7 +1,3 @@
-from __future__ import annotations
-
-import zmq
-
 """
 ZeroMQ SUB client receiving and printing EURUSD ticks.
 
@@ -10,6 +6,10 @@ AI-Powered by different LLMs
 The Python Quants GmbH | https://tpq.io
 https://hilpisch.com | https://linktr.ee/dyjh
 """
+
+from __future__ import annotations
+
+import zmq
 
 
 def run_tick_client(connect_addr: str="tcp://127.0.0.1:5555") -> None:

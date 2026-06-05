@@ -1,6 +1,3 @@
-import numpy as np
-import matplotlib.pyplot as plt
-
 """
 Autocorrelation-based efficiency test for synthetic return series.
 
@@ -9,6 +6,9 @@ AI-Powered by different LLMs
 The Python Quants GmbH | https://tpq.io
 https://hilpisch.com | https://linktr.ee/dyjh
 """
+
+import numpy as np
+import matplotlib.pyplot as plt
 
 plt.style.use("seaborn-v0_8")
 

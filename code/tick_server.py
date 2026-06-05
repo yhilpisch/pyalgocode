@@ -1,12 +1,3 @@
-from __future__ import annotations
-
-import json
-import time
-from datetime import datetime, timezone
-
-import numpy as np
-import zmq
-
 """
 Simple ZeroMQ PUB server streaming synthetic EURUSD ticks.
 
@@ -15,6 +6,15 @@ AI-Powered by different LLMs
 The Python Quants GmbH | https://tpq.io
 https://hilpisch.com | https://linktr.ee/dyjh
 """
+
+from __future__ import annotations
+
+import json
+import time
+from datetime import datetime, timezone
+
+import numpy as np
+import zmq
 
 
 def run_tick_server(bind_addr: str="tcp://127.0.0.1:5555",

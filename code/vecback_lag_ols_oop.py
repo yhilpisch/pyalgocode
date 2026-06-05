@@ -7,6 +7,8 @@ The Python Quants GmbH | https://tpq.io
 https://hilpisch.com | https://linktr.ee/dyjh
 """
 
+from __future__ import annotations
+
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt

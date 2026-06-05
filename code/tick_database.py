@@ -1,9 +1,3 @@
-from __future__ import annotations
-
-import sqlite3
-
-import zmq
-
 """
 ZeroMQ SUB client persisting EURUSD ticks into a SQLite database.
 
@@ -12,6 +6,12 @@ AI-Powered by different LLMs
 The Python Quants GmbH | https://tpq.io
 https://hilpisch.com | https://linktr.ee/dyjh
 """
+
+from __future__ import annotations
+
+import sqlite3
+
+import zmq
 
 
 def init_db(path: str="ticks.db") -> sqlite3.Connection:

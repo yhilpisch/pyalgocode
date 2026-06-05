@@ -1,13 +1,3 @@
-from __future__ import annotations
-
-from collections import deque
-from dataclasses import dataclass
-from typing import Deque, List
-
-import numpy as np
-import pandas as pd
-import matplotlib.pyplot as plt
-
 """
 Minimal event-based backtest using daily prices for a single instrument.
 The design follows the architecture sketched in Section 7:
@@ -20,7 +10,20 @@ The Python Quants GmbH | https://tpq.io
 https://hilpisch.com | https://linktr.ee/dyjh
 """
 
+from __future__ import annotations
+
+from collections import deque
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Deque, List
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+
 plt.style.use("seaborn-v0_8")
+
+DATA_URL = "https://hilpisch.com/epat_eod.csv"
 
 
 # --- Event types ------------------------------------------------------------
@@ -55,11 +58,6 @@ class OrderEvent(Event):
 
     time_index: pd.Timestamp
     quantity: float
-
-
-from pathlib import Path
-
-DATA_URL = "https://hilpisch.com/epat_eod.csv"
 
 
 @dataclass

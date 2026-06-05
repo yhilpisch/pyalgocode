@@ -1,6 +1,3 @@
-import numpy as np
-import pandas as pd
-
 """
 Computation of return and risk metrics for one or more P&L or return series.
 
@@ -27,6 +24,9 @@ AI-Powered by different LLMs
 The Python Quants GmbH | https://tpq.io
 https://hilpisch.com | https://linktr.ee/dyjh
 """
+
+import numpy as np
+import pandas as pd
 
 
 class StrategyMetrics:
