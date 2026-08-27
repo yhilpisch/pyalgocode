@@ -36,28 +36,31 @@ def simulate_coupled_returns(
     return x, y
 
 
-def simple_granger_regression(x: np.ndarray, y: np.ndarray) -> tuple[float, float]:
+def simple_granger_regression(
+    x: np.ndarray,
+    y: np.ndarray,
+) -> tuple[float, float]:
     """Compute R^2 for Y on lags of Y only vs lags of Y and X."""
-    # one-lag design matrices for Y_t = a + b Y_{t-1} + e_t
+    # Build a one-lag restricted model.
     y_lag = y[:-1]  # lagged Y
     y_t = y[1:]  # current Y aligned with lag
 
-    X_y = np.column_stack([np.ones_like(y_lag), y_lag])  # intercept and Y_{t-1}
+    X_y = np.column_stack([np.ones_like(y_lag), y_lag])
     beta_y, *_ = np.linalg.lstsq(X_y, y_t, rcond=None)  # restricted regression
     y_hat_y = X_y @ beta_y  # fitted values using Y lags only
     ss_tot = np.sum((y_t - y_t.mean()) ** 2)  # total sum of squares
     ss_res_y = np.sum((y_t - y_hat_y) ** 2)  # residual sum of squares
-    r2_y = 1.0 - ss_res_y / ss_tot  # R^2 for restricted model
+    r2_y = 1.0 - ss_res_y / ss_tot  # restricted-model fit
 
-    # augmented model: Y_t = a + b Y_{t-1} + c X_{t-1} + e_t
+    # Add the lagged candidate cause to the full model.
     x_lag = x[:-1]  # lagged X
     X_xy = np.column_stack(
         [np.ones_like(y_lag), y_lag, x_lag]
-    )  # intercept, Y_{t-1}, X_{t-1}
+    )
     beta_xy, *_ = np.linalg.lstsq(X_xy, y_t, rcond=None)  # full regression
     y_hat_xy = X_xy @ beta_xy  # fitted values using Y and X lags
     ss_res_xy = np.sum((y_t - y_hat_xy) ** 2)  # residual sum of squares (full)
-    r2_xy = 1.0 - ss_res_xy / ss_tot  # R^2 for full model
+    r2_xy = 1.0 - ss_res_xy / ss_tot  # full-model fit
 
     return float(r2_y), float(r2_xy)
 
@@ -65,13 +68,13 @@ def simple_granger_regression(x: np.ndarray, y: np.ndarray) -> tuple[float, floa
 def main() -> None:
     """Run simulation, compute R^2 values, and plot a bar chart."""
     x, y = simulate_coupled_returns()  # simulate coupled AR(1) returns
-    r2_y, r2_xy = simple_granger_regression(x, y)  # compute R^2 values
+    r2_y, r2_xy = simple_granger_regression(x, y)
 
     labels = [
         r"$Y_t$ on $Y_{t-1}$",
         r"$Y_t$ on $Y_{t-1}, X_{t-1}$",
     ]  # LaTeX-style labels for bar categories
-    values = [r2_y, r2_xy]  # restricted vs full model R^2 values
+    values = [r2_y, r2_xy]  # restricted and full fit
 
     fig, ax = plt.subplots(figsize=(4.5, 2.8))  # create figure and axes
     bars = ax.bar(
@@ -80,7 +83,7 @@ def main() -> None:
         color=["#001F5B", "#FF7F0E"],
     )  # simple bar plot with brand-aligned colors
 
-    y_max = max(values)  # largest R^2 value
+    y_max = max(values)  # largest fit statistic
     ax.set_ylim(0.0, y_max * 1.35)  # headroom for labels and title
 
     for bar, val in zip(bars, values):
@@ -91,7 +94,7 @@ def main() -> None:
             f"{val:.3f}",
             ha="center",
             va="bottom",
-        )  # annotate bars with numeric R^2 slightly above bar
+        )  # annotate each bar slightly above its top
 
     ax.set_ylabel(r"$R^2$")  # y-axis label with math typesetting
     ax.set_title(r"Granger-style $R^2$ comparison")  # descriptive title

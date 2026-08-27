@@ -47,8 +47,8 @@ class WalkForwardOLS:
         X = np.column_stack(
             [rets[(self.lags - k):(n - k)]
              for k in range(1, self.lags + 1)]
-        )  # columns r_{t-1},...,r_{t-lags}
-        y = rets[self.lags:]  # target r_t
+        )  # lagged-return columns
+        y = rets[self.lags:]  # target return
         dates = self.prices.index[(self.lags + 1):]
         return X, y, dates
 

@@ -141,7 +141,9 @@ def _diagnostic_results() -> dict[str, float]:
         log_returns_rw,
         outfile=str(FIG_DIR / "random_walk_sim.pdf"),
     )
-    eet.plot_efficiency_example(outfile=str(FIG_DIR / "emh_efficiency_test.pdf"))
+    eet.plot_efficiency_example(
+        outfile=str(FIG_DIR / "emh_efficiency_test.pdf")
+    )
 
     return {
         "alpha_hat": alpha_hat,

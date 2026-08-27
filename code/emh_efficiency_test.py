@@ -48,7 +48,9 @@ def autocorr(x: np.ndarray, max_lag: int=10) -> np.ndarray:
     return acf
 
 
-def plot_efficiency_example(outfile: str="figures/emh_efficiency_test.pdf") -> None:
+def plot_efficiency_example(
+    outfile: str="figures/emh_efficiency_test.pdf",
+) -> None:
     """Compare autocorrelation patterns for efficient and inefficient returns.
 
     The function generates two return series, computes their

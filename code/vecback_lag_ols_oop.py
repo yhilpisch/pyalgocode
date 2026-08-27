@@ -49,23 +49,27 @@ class LagOLSBacktest:
             src: str | Path = local_path
         else:
             src = DATA_URL
-            print(f"Local data file {local_path} not found, loading from {DATA_URL}")
+            print(
+                f"Local data file {local_path} not found, "
+                f"loading from {DATA_URL}"
+            )
         df = pd.read_csv(src, parse_dates=["Date"]).set_index("Date")
-        prices = df[self.column].astype(float).dropna()  # ensure numeric, drop gaps
+        # Ensure numeric prices and remove gaps.
+        prices = df[self.column].astype(float).dropna()
         self.prices = prices  # pandas Series indexed by date
 
     def _prepare_data(self) -> None:
         """Convert prices to log-returns and assemble lagged design matrix."""
         log_prices = np.log(self.prices.to_numpy())  # work with log prices
-        rets = np.diff(log_prices)  # daily log-returns r_t
+        rets = np.diff(log_prices)  # daily log-returns
         dates = self.prices.index[1:]  # dates aligned with returns
         n = rets.shape[0]  # sample size in returns
         if n <= self.lags:
             raise ValueError("not enough observations for chosen lags")
         X = np.column_stack(
             [rets[(self.lags - k):(n - k)] for k in range(1, self.lags + 1)]
-        )  # columns r_{t-1},...,r_{t-lags}
-        y = rets[self.lags:]  # target r_t
+        )  # lagged-return columns
+        y = rets[self.lags:]  # target return
         self.X = X  # feature matrix
         self.y = y  # dependent variable
         self.dates = dates[self.lags:]  # effective backtest dates
@@ -73,7 +77,8 @@ class LagOLSBacktest:
     def fit(self) -> None:
         """Estimate regression coefficients for return on lagged returns."""
         X_design = np.column_stack([np.ones(self.X.shape[0]), self.X])
-        self.beta = np.linalg.lstsq(X_design, self.y, rcond=None)[0]  # OLS solution
+        # Solve the ordinary least-squares system.
+        self.beta = np.linalg.lstsq(X_design, self.y, rcond=None)[0]
 
     def run_strategy(self) -> np.ndarray:
         """Compute strategy returns implied by the fitted model."""

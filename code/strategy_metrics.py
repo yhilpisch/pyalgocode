@@ -67,7 +67,8 @@ class StrategyMetrics:
     def _to_returns_from_pnl(pnl: pd.Series) -> pd.Series:
         """Convert a P&L / equity series x_t into simple returns r_t."""
         pnl = pnl.sort_index()  # ensure chronological order
-        rets = pnl.pct_change(fill_method=None).dropna()  # r_t = x_t/x_{t-1} - 1
+        # Compute percentage changes in the equity curve.
+        rets = pnl.pct_change(fill_method=None).dropna()
         return rets
 
     def _ensure_returns(

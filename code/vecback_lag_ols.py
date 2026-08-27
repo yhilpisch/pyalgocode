@@ -31,7 +31,10 @@ def load_prices(path: str="data/epat_eod.csv",
         src: str | Path = local_path
     else:
         src = DATA_URL
-        print(f"Local data file {local_path} not found, loading from {DATA_URL}")
+        print(
+            f"Local data file {local_path} not found, "
+            f"loading from {DATA_URL}"
+        )
     df = pd.read_csv(src, parse_dates=["Date"])
     df = df.set_index("Date")
     prices = df[column].astype(float).dropna()
@@ -43,17 +46,19 @@ def make_lagged_returns(prices: pd.Series,
                         ) -> tuple[np.ndarray, np.ndarray, pd.DatetimeIndex]:
     """Compute log-returns and build a lagged design matrix."""
     log_prices = np.log(prices.to_numpy())
-    rets = np.diff(log_prices)  # r_t = log S_t - log S_{t-1}
+    rets = np.diff(log_prices)  # log-returns from prices
     dates = prices.index[1:]
 
     n = rets.shape[0]
     if n <= lags:
-        raise ValueError("Not enough observations for the chosen number of lags.")
+        raise ValueError(
+            "Not enough observations for the chosen number of lags."
+        )
 
     X = np.column_stack(
         [rets[(lags - k):(n - k)] for k in range(1, lags + 1)]
-    )  # columns r_{t-1},...,r_{t-lags}
-    y = rets[lags:]  # target r_t
+    )  # lagged-return columns
+    y = rets[lags:]  # target return
     dates_eff = dates[lags:]  # effective dates for y and X rows
     return X, y, dates_eff
 
@@ -73,7 +78,8 @@ def run_lag_strategy(X: np.ndarray, y: np.ndarray,
     y_pred = X_design @ beta  # one-step-ahead forecasts
 
     pos = np.sign(y_pred)  # -1, 0, or +1 depending on forecast sign
-    strat_rets = pos * y  # gross strategy returns; prediction for r_t applied to r_t
+    # Apply each forecast position to its aligned realised return.
+    strat_rets = pos * y
 
     turnover = np.abs(pos[1:] - pos[:-1])  # trades per step
     strat_rets[1:] = strat_rets[1:] - cost * turnover  # apply transaction costs

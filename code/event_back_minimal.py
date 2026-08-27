@@ -82,7 +82,10 @@ class CSVDataHandler:
             src: str | Path = local_path
         else:
             src = DATA_URL
-            print(f"Local data file {local_path} not found, loading from {DATA_URL}")
+            print(
+                f"Local data file {local_path} not found, "
+                f"loading from {DATA_URL}"
+            )
         df = pd.read_csv(src, parse_dates=["Date"]).set_index("Date")
         prices = df[column].astype(float).dropna()  # clean symbol series
         self.prices = prices
@@ -96,7 +99,13 @@ class CSVDataHandler:
         except StopIteration:
             self.continue_backtest = False
             return
-        events.append(MarketEvent(type="MARKET", time_index=time_index, price=price))
+        events.append(
+            MarketEvent(
+                type="MARKET",
+                time_index=time_index,
+                price=price,
+            )
+        )
 
 
 class SimpleMomentumStrategy:
@@ -125,7 +134,11 @@ class SimpleMomentumStrategy:
         self.last_price = event.price
         signal = np.sign(ret)  # +1 after up-move, -1 after down-move
         events.append(
-            SignalEvent(type="SIGNAL", time_index=event.time_index, signal=signal)
+            SignalEvent(
+                type="SIGNAL",
+                time_index=event.time_index,
+                signal=signal,
+            )
         )
 
 
@@ -168,7 +181,8 @@ class SimplePortfolio:
         if self.latest_price is None:
             return
         target_position = event.signal  # long 1 unit or short 1 unit
-        quantity = target_position - self.position  # change from current position
+        # Calculate the trade needed to reach the target position.
+        quantity = target_position - self.position
         if quantity != 0.0:
             events.append(
                 OrderEvent(

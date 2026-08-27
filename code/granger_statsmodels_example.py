@@ -17,11 +17,11 @@ def run_granger_tests(max_lag: int=2) -> None:
     """Apply standard Granger-causality tests to simulated returns."""
     x, y = simulate_coupled_returns()  # simulate coupled X, Y returns
 
-    data_yx = np.column_stack([y, x])  # columns: [Y_t, X_t]
+    data_yx = np.column_stack([y, x])  # outcome, then candidate cause
     # H0: X does not Granger-cause Y (second col does not cause first)
     results_xy = grangercausalitytests(data_yx, maxlag=max_lag, verbose=False)
 
-    data_xy = np.column_stack([x, y])  # columns: [X_t, Y_t]
+    data_xy = np.column_stack([x, y])  # reverse ordering
     # H0: Y does not Granger-cause X (second col does not cause first)
     results_yx = grangercausalitytests(data_xy, maxlag=max_lag, verbose=False)
 
@@ -33,7 +33,8 @@ def run_granger_tests(max_lag: int=2) -> None:
     print("\nTesting whether Y Granger-causes X")  # header for reverse test
     for lag in range(1, max_lag + 1):
         test_res = results_yx[lag][0]["ssr_ftest"]  # same F-test in reverse
-        print(f"lag={lag}: p-value={test_res[1]:.4f}")  # large p => do not reject
+        # A large p-value does not reject the reverse null.
+        print(f"lag={lag}: p-value={test_res[1]:.4f}")
 
 
 if __name__ == "__main__":
