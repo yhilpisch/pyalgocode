@@ -47,7 +47,7 @@ The notebook is the interactive companion to the article’s EMH benchmark and t
 
 Highlights:
 
-- Loads daily EURUSD prices from `data/epat_eod.csv` and inspects the series.
+- Loads daily EURUSD prices from `../data/epat_eod.csv` (relative to the `notebooks/` directory) and inspects the series.
 - Defines `make_lagged_returns(...)` to:
   - compute log-returns,  
   - build a design matrix of lagged returns (by default seven lags), and  
@@ -106,6 +106,18 @@ Highlights:
 - Includes practical notes on running server and clients in separate processes or terminals so that learners can observe the streaming behavior live.
 
 This notebook connects the event-based backtest to a streaming context and shows how the same concepts can power paper-trading or monitoring tools.
+
+---
+
+## `emh_algo_quiz.ipynb` · 25-Question Review (All Sections)
+
+**Goal.** Reinforce the full arc from EMH benchmarks to streaming with twenty-five short review questions, one per section.
+
+Highlights:
+
+- One question per major topic: EMH basics, random-walk interpretation, autocorrelation, linear predictability, vectorized and event-based backtesting, transaction costs, in-sample versus out-of-sample evaluation, overfitting, Sharpe ratio interpretation, asymmetry, model complexity, data leakage, and a closing summary.
+- Each question combines a short Markdown prompt with the conceptual anchor from the corresponding article section, so the quiz doubles as a section map.
+- Designed for self-study before or after the lecture; answers trace directly back to the notebooks and scripts above.
 
 ---
 

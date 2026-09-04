@@ -193,6 +193,22 @@ This script complements the hand-rolled regression example and shows how to conn
 
 ---
 
+## Section 11 · Walk-Forward Validation with OOP
+
+### `walkforward_ols.py`
+
+Implements an expanding-window walk-forward scheme for the lagged-returns OLS strategy, so that every forecast is produced by a model trained only on data that precedes it.
+
+Key elements:
+
+- Wraps the vectorized lagged-returns backtest in a compact `WalkForwardOLS` class that encapsulates feature construction, OLS fitting, sign-based position sizing, cost application, and equity tracking.
+- Starts with a minimum training window, produces forecasts for a short test horizon, then expands the training set and repeats.
+- Returns the evolving equity curve as a `pandas.Series` indexed by the effective evaluation dates, ready for plotting or metric computation.
+
+This script shows why walk-forward validation is a minimal but powerful way to detect over-fitting before a strategy reaches a live environment.
+
+---
+
 ## Appendix · Strategy Metrics and Diagnostics
 
 ### `strategy_metrics.py`
@@ -212,7 +228,16 @@ Key elements:
 - Returns a `pandas.DataFrame` with metrics as the index and series names as columns, ready to be exported or merged with other reports.
 - In the main block, loads three instruments (`EURUSD`, `SPY`, `AAPL`) from `data/epat_eod.csv`, uses `SPY` as a benchmark, and prints a rounded overview of the metrics for all three.
 
-- Each script can be explored independently, but running them in the order outlined above mirrors the narrative progression of the article from EMH benchmarks to streaming and causality analysis.
+### `generate_article_results.py`
+
+Regenerates the result macros used by the article, slide deck, and supplement: it re-runs the numerical examples and writes `generated/results_values.tex`, so the `\Res*` macros resolve consistently across all four TeX deliverables.
+
+Key elements:
+
+- Re-runs the OLS, vectorized, event-based, and Granger examples with fixed seeds.
+- Writes total returns, Sharpe ratios, maximum drawdowns, and $R^2$ values as LaTeX macros into `generated/results_values.tex`.
+- Keeps sources, builds, and result files in sync: after any change to the underlying scripts, rerun this script before rebuilding the documents.
+
 ## Usage Notes
 
 - All scripts assume a standard virtual Python environment with `numpy`, `pandas`, `matplotlib`, and, where applicable, `statsmodels`, `pyzmq`, and `sqlite3` installed.
